@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# dotenv environment variables
+.env
+
+# Virtual environment
+venv/
+env/
+
+# VSCode settings
+.vscode/
+
+# macOS stuff
+.DS_Store
+
+# pycache or other cache folders
+*.log
+*.sqlite3
+*.db
+*.zip
+
+# Chat sessions / app state files
+chat_sessions.json
