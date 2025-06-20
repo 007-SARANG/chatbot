@@ -1,26 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Chatbot</title>
+  <meta charset="UTF-8">
+  <title>SarangBot 💬</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-800 to-black text-white h-screen flex flex-col">
+
+  <header class="text-3xl font-bold p-4 text-center bg-black bg-opacity-30 shadow-lg">SarangBot 😎</header>
+
+  <div id="chat" class="flex-1 overflow-y-auto p-6 space-y-4">
+    <!-- Messages will appear here -->
+  </div>
+
+  <div class="p-4 flex gap-2 bg-black bg-opacity-40 backdrop-blur">
+    <input id="msg" class="flex-1 p-3 rounded-xl text-black" type="text" placeholder="Type your message..." />
+    <button onclick="sendMessage()" class="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl text-white font-semibold transition">Send</button>
+  </div>
+
   <script>
     async function sendMessage() {
       const input = document.getElementById("msg");
+      const chatBox = document.getElementById("chat");
+      const message = input.value.trim();
+      if (!message) return;
+
+      // Show user message
+      chatBox.innerHTML += `<div class="text-right"><span class="inline-block bg-purple-600 px-4 py-2 rounded-xl">${message}</span></div>`;
+      input.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Show "typing..." temporarily
+      const typingDiv = document.createElement("div");
+      typingDiv.innerHTML = `<div class="text-left text-gray-400">Bot is typing...</div>`;
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Fetch response from Flask backend
       const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input.value })
+        body: JSON.stringify({ message })
       });
       const data = await res.json();
-      document.getElementById("chat").innerHTML += "<p>You: " + input.value + "</p>";
-      document.getElementById("chat").innerHTML += "<p>Bot: " + data.reply + "</p>";
-      input.value = "";
+
+      // Remove typing...
+      chatBox.removeChild(typingDiv);
+
+      // Show bot reply
+      chatBox.innerHTML += `<div class="text-left"><span class="inline-block bg-gray-800 px-4 py-2 rounded-xl">${data.reply}</span></div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
   </script>
-</head>
-<body>
-  <h2>Talk to your Bot</h2>
-  <div id="chat" style="height: 300px; overflow-y: scroll;"></div>
-  <input id="msg" type="text" />
-  <button onclick="sendMessage()">Send</button>
 </body>
 </html>
