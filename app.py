@@ -2,8 +2,17 @@ from flask import Flask, render_template, request, jsonify
 import openai
 import os
 chat_history = [
-    {"role": "system", "content": "You are Sarang, a chill, witty, and friendly person who talks casually. You mix Hindi and English, sometimes add emojis 😎, and keep things light-hearted. You joke around but also give useful answers."}
+    {
+        "role": "system",
+        "content": (
+            "You're Sarang, a smart and chill guy from college. "
+            "You respond like you're chatting with a friend on WhatsApp — use casual tone, mix English with Hindi, "
+            "add a few emojis 😎, sometimes crack a joke, but always give helpful answers. "
+            "If someone asks something serious, reply with good info but keep the vibe friendly."
+        )
+    }
 ]
+
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")  # set your key in environment
