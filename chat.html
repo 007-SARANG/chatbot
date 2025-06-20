@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Chatbot</title>
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("msg");
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input.value })
+      });
+      const data = await res.json();
+      document.getElementById("chat").innerHTML += "<p>You: " + input.value + "</p>";
+      document.getElementById("chat").innerHTML += "<p>Bot: " + data.reply + "</p>";
+      input.value = "";
+    }
+  </script>
+</head>
+<body>
+  <h2>Talk to your Bot</h2>
+  <div id="chat" style="height: 300px; overflow-y: scroll;"></div>
+  <input id="msg" type="text" />
+  <button onclick="sendMessage()">Send</button>
+</body>
+</html>
