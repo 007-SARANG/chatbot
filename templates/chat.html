@@ -1,56 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SarangBot 💬</title>
+  <meta charset="UTF-8" />
+  <title>Sarang Bot 💬</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #a78bfa;
+      border-radius: 10px;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-purple-800 to-black text-white h-screen flex flex-col">
+<body class="bg-gradient-to-br from-indigo-900 to-black h-screen flex flex-col font-sans">
 
-  <header class="text-3xl font-bold p-4 text-center bg-black bg-opacity-30 shadow-lg">SarangBot 😎</header>
+  <header class="text-4xl text-white font-bold p-4 text-center border-b border-purple-400 shadow-md">
+    Sarang Bot 😎
+  </header>
 
-  <div id="chat" class="flex-1 overflow-y-auto p-6 space-y-4">
-    <!-- Messages will appear here -->
+  <div id="chat" class="flex-1 overflow-y-auto p-6 space-y-4 text-white bg-black bg-opacity-20 backdrop-blur">
+    <!-- Messages go here -->
   </div>
 
-  <div class="p-4 flex gap-2 bg-black bg-opacity-40 backdrop-blur">
-    <input id="msg" class="flex-1 p-3 rounded-xl text-black" type="text" placeholder="Type your message..." />
-    <button onclick="sendMessage()" class="bg-purple-600 hover:bg-purple-700 px-5 py-3 rounded-xl text-white font-semibold transition">Send</button>
+  <div class="p-4 bg-black bg-opacity-40 flex gap-2 items-center">
+    <input id="msg" type="text" placeholder="Type your message..." class="flex-1 px-4 py-3 rounded-lg bg-white text-black outline-none focus:ring-2 focus:ring-purple-500" />
+    <button onclick="sendMessage()" class="px-6 py-3 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition">
+      Send
+    </button>
+  </div>
+
+  <!-- Powered by footer -->
+  <div class="text-center text-sm text-gray-400 p-2 bg-black bg-opacity-30">
+    🤖 Powered by <span class="text-purple-400 font-semibold">Groq Llama 3.3</span>
   </div>
 
   <script>
+    const input = document.getElementById("msg");
+    const chatBox = document.getElementById("chat");
+
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+
     async function sendMessage() {
-      const input = document.getElementById("msg");
-      const chatBox = document.getElementById("chat");
       const message = input.value.trim();
       if (!message) return;
 
-      // Show user message
-      chatBox.innerHTML += `<div class="text-right"><span class="inline-block bg-purple-600 px-4 py-2 rounded-xl">${message}</span></div>`;
+      chatBox.innerHTML += `<div class="text-right"><div class="inline-block bg-purple-600 px-4 py-2 rounded-xl mb-2">${message}</div></div>`;
       input.value = "";
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Show "typing..." temporarily
       const typingDiv = document.createElement("div");
-      typingDiv.innerHTML = `<div class="text-left text-gray-400">Bot is typing...</div>`;
+      typingDiv.id = "typing";
+      typingDiv.innerHTML = `<div class="text-left text-gray-400 italic">Sarang Bot is typing...</div>`;
       chatBox.appendChild(typingDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Fetch response from Flask backend
-      const res = await fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-      });
-      const data = await res.json();
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message }),
+        });
 
-      // Remove typing...
-      chatBox.removeChild(typingDiv);
-
-      // Show bot reply
-      chatBox.innerHTML += `<div class="text-left"><span class="inline-block bg-gray-800 px-4 py-2 rounded-xl">${data.reply}</span></div>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
+        const data = await res.json();
+        document.getElementById("typing").remove();
+        chatBox.innerHTML += `<div class="text-left"><div class="inline-block bg-gray-800 px-4 py-2 rounded-xl">${data.reply}</div></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (err) {
+        document.getElementById("typing").remove();
+        chatBox.innerHTML += `<div class="text-left text-red-500">❌ Failed to get response</div>`;
+      }
     }
   </script>
 </body>
