@@ -1,0 +1,35 @@
+/* Optional: override or enhance styles beyond Tailwind */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1f0036, #000000);
+  color: #f0f0f0;
+}
+
+input#msg {
+  border: 2px solid #8b5cf6;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+input#msg:focus {
+  border-color: #c084fc;
+  box-shadow: 0 0 10px #c084fc44;
+}
+
+button {
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
+}
+
+button:hover {
+  transform: scale(1.05);
+  transition: 0.2s ease-in-out;
+}
+
+#chat::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chat::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 8px;
+}
