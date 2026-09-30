@@ -24,3 +24,5 @@ env/
 
 # Chat sessions / app state files
 chat_sessions.json
+.env.*
+!.env.example
